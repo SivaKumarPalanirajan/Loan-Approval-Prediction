@@ -37,7 +37,6 @@ df1[0]=np.where(df1[0]=="Semiurban",1,df1[0])
 df1=df1.T
 
 if confirmation!="":
-    print(df1)
     import pickle
     model= pickle.load(open('model.sav', 'rb')) 
     y_pred=model.predict(df1)
