@@ -3,13 +3,14 @@ import numpy as np
 import streamlit as st
 import base64
 from sklearn.metrics import accuracy_score
+
 @st.cache_data()
 def get_base64_of_bin_file(file):
     with open(file, 'rb') as f:
         data = f.read()
     return base64.b64encode(data).decode()
 pic=get_base64_of_bin_file("bg7.png")
-
+st.title("Loan Approval Predictor")
 page_bg_img = f'''
     <style>
     .stApp {{
@@ -22,31 +23,20 @@ st.markdown(page_bg_img, unsafe_allow_html=True)
 st.info("ENTER DETAILS BELOW")
 
 #getting in the input
-married = st.radio("ARE YOU MARRIED:",["Yes","No"])
-employed=st.radio("ARE YOU SELF EMPLOYED:",["Yes","No"])
-history=st.number_input("ENTER CREDIT HISTORY:")
-area=st.radio("ENTER THE AREA OF THE PROPERTY:",["Urban","Rural","Semiurban"])
+
+loan_term=st.number_input("Enter Loan Term:")
+cibil_score=st.number_input("Enter CIBIL Score:")
+
 confirmation=st.text_input("PLEASE ENTER CONFIRM IF THE DETAILS ARE CORRECT")
-L=[married,employed,history,area]
-df1=pd.DataFrame(L)
-df1[0]=np.where(df1[0]=="No",0,df1[0])
-df1[0]=np.where(df1[0]=="Yes",1,df1[0])
-df1[0]=np.where(df1[0]=="Urban",2,df1[0])
-df1[0]=np.where(df1[0]=="Rural",0,df1[0])
-df1[0]=np.where(df1[0]=="Semiurban",1,df1[0])
-df1=df1.T
+L=[loan_term,cibil_score]
 
 if confirmation!="":
     import pickle
-    model= pickle.load(open('model.sav', 'rb')) 
-    y_pred=model.predict(df1)
+    model= pickle.load(open('RandomForestModel.sav', 'rb')) 
+    y_pred=model.predict([L])
     st.write("ACCORDING TO OUR MODEL'S PREDICTION:")
-    if y_pred==1:
-        print("LOAN APPROVED")
-        st.markdown("LOAN APPROVED")
-    else:
-        print("LOAN NOT APPROVED")
-        st.markdown("LOAN NOT APPROVED")
-
+    y_pred=y_pred[0]
+    print(y_pred)
+    st.markdown(f"Your Loan is predicted to be {y_pred}")
 else:
     st.stop()
