@@ -32,7 +32,7 @@ L=[loan_term,cibil_score]
 
 if confirmation!="":
     import pickle
-    model= pickle.load(open('RandomForestModel.sav', 'rb')) 
+    model= pickle.load(open('models/RandomForestModel.sav', 'rb')) 
     y_pred=model.predict([L])
     st.write("ACCORDING TO OUR MODEL'S PREDICTION:")
     y_pred=y_pred[0]
